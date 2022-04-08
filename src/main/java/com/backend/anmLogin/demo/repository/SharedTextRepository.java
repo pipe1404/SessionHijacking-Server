@@ -1,7 +1,7 @@
 package com.backend.anmLogin.demo.repository;
 
-import com.backend.anmLogin.demo.entity.User;
+import com.backend.anmLogin.demo.entity.SharedText;
 import org.springframework.data.repository.CrudRepository;
 
-public class SharedTextRepository extends CrudRepository<User, Long> {
+public interface SharedTextRepository extends CrudRepository<SharedText, Long> {
 }

@@ -8,7 +8,18 @@
 <!-- Include _menu.html -->
 <th:block th:include="/_menu"></th:block>
 
-<h1>Logout Successful!</h1>
+<table>
+  <tr>
+    <td>User</td>
+    <td>Text</td>
+  </tr>
+  <th:block th:each="sharedText : ${sharedTexts}">
+    <tr>
+      <td th:text="${sharedText.owner.name}">A Smoke Test'</td>
+      <td th:text="${sharedText.text}">A Smoke Test'</td>
+    </tr>
+  </th:block>
+</table>
 </body>
 
 </html>

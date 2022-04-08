@@ -1,6 +1,8 @@
 package com.backend.anmLogin.demo.controller;
 
 
+import com.backend.anmLogin.demo.entity.SharedText;
+import com.backend.anmLogin.demo.repository.SharedTextRepository;
 import com.backend.anmLogin.demo.service.UserDetailsServiceImpl;
 import com.backend.anmLogin.demo.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.security.Principal;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -22,6 +26,9 @@ import java.util.logging.Logger;
 public class WebMainController {
     @Autowired
     UserDetailsServiceImpl userDetailsService;
+
+    @Autowired
+    SharedTextRepository sharedTextRepository;
 
     @RequestMapping(value = { "/", "/welcome" }, method = RequestMethod.GET)
     public String welcomePage(Model model) {
@@ -68,6 +75,17 @@ public class WebMainController {
 
         return "userInfoPage";
     }
+
+    @RequestMapping(value = "/sharedMem", method = RequestMethod.GET)
+    public String sharedMem(Model model, Principal principal)
+    {
+        List<SharedText> sharedTexts = new LinkedList<>();
+        sharedTextRepository.findAll().forEach(sharedTexts::add);
+
+        model.addAttribute("sharedTexts", sharedTexts);
+        return "sharedMem";
+    }
+
 
     @RequestMapping(value = "/403", method = RequestMethod.GET)
     public String accessDenied(Model model, Principal principal) {
