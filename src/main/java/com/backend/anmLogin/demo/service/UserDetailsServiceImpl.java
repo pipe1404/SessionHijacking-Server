@@ -57,13 +57,4 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return userDetails;
     }
 
-    public void createNewUser(com.backend.anmLogin.demo.entity.User user)
-    {
-        user.setEncrytedPassword(encConfig.passwordEncoder().encode(user.getEncrytedPassword()));
-        user = userRepository.save(user);
-        UserRole ur = new UserRole();
-        ur.setUser(user);
-        ur.setRole(roleRepository.findByName("ROLE_USER"));
-        userRoleRepository.save(ur);
-    }
 }
