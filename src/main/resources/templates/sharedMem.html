@@ -2,24 +2,71 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>Shared mem</title>
+  <style>
+    table, td, th {
+      border: 0.5px solid;
+      border-collapse: collapse;
+    }
+    th {
+      padding: 5px 5px
+    }
+    td {
+      margin: 5px 5px
+    }
+    #data-table {
+
+    }
+  </style>
 </head>
 
 <body>
 <!-- Include _menu.html -->
 <th:block th:include="/_menu"></th:block>
 
-<table>
+<h1>Place your note here</h1>
+
+<button id="btn-create-note" onclick="addnote()" style="margin:10px 10px">Add your public note</button>
+
+<table id="data-table" style="width:100%">
   <tr>
-    <td>User</td>
-    <td>Text</td>
+    <th style="width:30%">User</th>
+    <th>Text</th>
+    <th style="width:10%">Delete</th>
   </tr>
+  <tr th:if="${sharedTexts.empty}">
+    <td colspan="2"> No Note Available </td>
+  </tr>
+
   <th:block th:each="sharedText : ${sharedTexts}">
     <tr>
-      <td th:text="${sharedText.owner.name}">A Smoke Test'</td>
-      <td th:text="${sharedText.text}">A Smoke Test'</td>
+      <td th:text="${sharedText.owner.name}"></td>
+      <td th:utext="${sharedText.text}"></td>
+      <td th:if="${sharedText.owner.name == principalName}">
+        <button id="btn-delete-note" onclick="deleteNote(this)" th:itemid="${sharedText.id}" style="margin:10px 10px">Delete</button>
+
+      </td>
     </tr>
   </th:block>
 </table>
+
+<script>
+  function addnote(){
+
+  }
+
+  function deleteNote(btn){
+    fetch("sharedMem/del?textId=" + btn.attributes['itemId'].value).then(rs => {
+      if(rs.status == 200){
+        window.alert("deleted");
+        location.reload();
+      }
+      else
+      {
+        window.alert("failed +" rs.status);
+      }
+    })
+  }
+</script>
 </body>
 
 </html>

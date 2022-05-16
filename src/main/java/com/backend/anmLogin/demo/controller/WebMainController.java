@@ -3,24 +3,27 @@ package com.backend.anmLogin.demo.controller;
 
 import com.backend.anmLogin.demo.entity.SharedText;
 import com.backend.anmLogin.demo.repository.SharedTextRepository;
+import com.backend.anmLogin.demo.repository.UserRepository;
 import com.backend.anmLogin.demo.service.UserDetailsServiceImpl;
 import com.backend.anmLogin.demo.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Controller
 public class WebMainController {
@@ -29,6 +32,9 @@ public class WebMainController {
 
     @Autowired
     SharedTextRepository sharedTextRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     @RequestMapping(value = { "/", "/welcome" }, method = RequestMethod.GET)
     public String welcomePage(Model model) {
@@ -83,6 +89,7 @@ public class WebMainController {
         sharedTextRepository.findAll().forEach(sharedTexts::add);
 
         model.addAttribute("sharedTexts", sharedTexts);
+        model.addAttribute("principalName", principal.getName());
         return "sharedMem";
     }
 
@@ -104,6 +111,28 @@ public class WebMainController {
         }
 
         return "403Page";
+    }
+
+    @RequestMapping(value = "/sharedMem/del", method = RequestMethod.GET)
+    public ResponseEntity<String> deleteSharedText(@RequestParam(name = "textId") long textId, Principal principal)
+    {
+        if(principal == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        var text = sharedTextRepository.findById(textId);
+        if(text.isPresent())
+        {
+            if(!Objects.equals(text.get().getOwner().getName(), principal.getName()))
+            {
+                return new ResponseEntity<String>(HttpStatus.FORBIDDEN);
+            }
+
+            sharedTextRepository.delete(text.get());
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        else
+        {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
     }
 
 }

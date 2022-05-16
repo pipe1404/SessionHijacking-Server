@@ -19,6 +19,6 @@ public class SharedText {
   @JoinColumn(name = "user_id", nullable = false)
   private User owner;
 
-  @Column(name = "text_content", length = 36, nullable = false)
+  @Column(name = "text_content", length = 100, nullable = false)
   private String text;
 }

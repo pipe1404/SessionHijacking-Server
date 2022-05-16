@@ -15,8 +15,8 @@
 
     <a th:if="${#request.userPrincipal != null}" th:href="@{/sharedMem}">Shared memory</a>
 
-    | &nbsp;
-
+    <a th:if="${#request.userPrincipal != null}">|</a>
+    &nbsp;
     <a th:if="${#request.userPrincipal != null}" th:href="@{/logout}">Logout</a>
 
 
