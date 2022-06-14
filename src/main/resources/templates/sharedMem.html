@@ -6,6 +6,7 @@
     table, td, th {
       border: 0.5px solid;
       border-collapse: collapse;
+      text-align: center;
     }
     th {
       padding: 5px 5px
@@ -25,12 +26,13 @@
 
 <h1>Place your note here</h1>
 
-<button id="btn-create-note" onclick="addnote()" style="margin:10px 10px">Add your public note</button>
+<button id="btn-create-note" onclick="addNote(this)" style="margin:10px 10px">Add your public note</button>
 
 <table id="data-table" style="width:100%">
   <tr>
     <th style="width:30%">User</th>
     <th>Text</th>
+    <th style="width:10%">Created at</th>
     <th style="width:10%">Delete</th>
   </tr>
   <tr th:if="${sharedTexts.empty}">
@@ -41,16 +43,34 @@
     <tr>
       <td th:text="${sharedText.owner.name}"></td>
       <td th:utext="${sharedText.text}"></td>
+      <td th:text="${sharedText.createdAt}"></td>
       <td th:if="${sharedText.owner.name == principalName}">
-        <button id="btn-delete-note" onclick="deleteNote(this)" th:itemid="${sharedText.id}" style="margin:10px 10px">Delete</button>
-
+        <button id="btn-delete-note" onclick="deleteNote(this)" th:itemid="${sharedText.id.toString()}" style="margin:10px 10px">Delete</button>
       </td>
     </tr>
   </th:block>
 </table>
 
 <script>
-  function addnote(){
+  function addNote(btn){
+    console.log("addnote")
+    message = prompt('Type your message here')
+    fetch("sharedMem/add", {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, *cors, same-origin
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+        'Content-Type': 'application/json'
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: 'follow', // manual, *follow, error
+      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: message // body data type must match "Content-Type" header
+    }).then(rs => {
+      if(rs.status == 200) {
+        location.reload();
+    }})
 
   }
 
@@ -62,7 +82,7 @@
       }
       else
       {
-        window.alert("failed +" rs.status);
+        window.alert("failed " + rs.status);
       }
     })
   }

@@ -18,10 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -114,7 +111,7 @@ public class WebMainController {
     }
 
     @RequestMapping(value = "/sharedMem/del", method = RequestMethod.GET)
-    public ResponseEntity<String> deleteSharedText(@RequestParam(name = "textId") long textId, Principal principal)
+    public ResponseEntity<String> deleteSharedText(@RequestParam(name = "textId") UUID textId, Principal principal)
     {
         if(principal == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         var text = sharedTextRepository.findById(textId);
@@ -133,6 +130,25 @@ public class WebMainController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
+    }
+
+    @RequestMapping(value = "/sharedMem/add", method = RequestMethod.POST,
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.TEXT_PLAIN_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.TEXT_PLAIN_VALUE})
+    public ResponseEntity<Boolean> addSharedText(@RequestBody String message, Principal principal) {
+        boolean resp[] = new boolean[]{false};
+        userRepository.findByName(principal.getName()).ifPresentOrElse(user -> {
+            SharedText st = new SharedText();
+            st.setText(message);
+            st.setOwner(user);
+            st = sharedTextRepository.save(st);
+            resp[0] = true;
+        },
+       () -> {
+            resp[0] = false;
+       });
+
+        return new ResponseEntity<Boolean>(resp[0], HttpStatus.OK);
     }
 
 }
