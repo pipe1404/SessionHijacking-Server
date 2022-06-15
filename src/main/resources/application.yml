@@ -4,6 +4,11 @@ spring:
     url: jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
+    server:
+      servlet:
+        session:
+          cookie:
+            http-only: false
   jpa:
     show-sql: true
     hibernate:

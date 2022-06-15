@@ -75,20 +75,6 @@ CREATE TABLE public.role (
 ALTER TABLE public.role OWNER TO postgres;
 
 --
--- Name: sharedtext; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.sharedtext (
-    id bigint NOT NULL,
-    text character varying(36) NOT NULL,
-    user_id bigint NOT NULL,
-    text_content character varying(36) NOT NULL
-);
-
-
-ALTER TABLE public.sharedtext OWNER TO postgres;
-
---
 -- Name: user_role; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -127,15 +113,6 @@ COPY public.role (id, name) FROM stdin;
 1	ROLE_ADMIN
 2	ROLE_USER
 \.
-
-
---
--- Data for Name: sharedtext; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.sharedtext (id, text, user_id, text_content) FROM stdin;
-\.
-
 
 --
 -- Data for Name: user_role; Type: TABLE DATA; Schema: public; Owner: postgres
@@ -185,14 +162,6 @@ ALTER TABLE ONLY public.role
 
 ALTER TABLE ONLY public.role
     ADD CONSTRAINT role_uk UNIQUE (name);
-
-
---
--- Name: sharedtext sharedtext_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.sharedtext
-    ADD CONSTRAINT sharedtext_pkey PRIMARY KEY (id);
 
 
 --
