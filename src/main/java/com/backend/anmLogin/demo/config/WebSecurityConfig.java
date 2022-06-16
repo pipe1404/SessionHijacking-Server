@@ -13,11 +13,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
+import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig  extends WebSecurityConfigurerAdapter {
+    @Autowired
+    ServletContext servletContext;
+
     @Autowired
     private DataSource dataSource;
 
@@ -79,5 +83,4 @@ public class WebSecurityConfig  extends WebSecurityConfigurerAdapter {
         db.setDataSource(dataSource);
         return db;
     }
-
 }
